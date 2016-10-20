@@ -1,0 +1,290 @@
+类的定义，和一个空的主界面。
+
+1 Shoot项目
+1.1 问题
+Shoot游戏是一款十分有趣的射击类小游戏，流畅的画面，高难度的挑战。游戏中，玩家驾驶英雄机，在空中进行战斗。点击并移动自己的英雄机，发射炮弹，打掉敌飞机以及蜜蜂，来获得分数和奖励，打掉一架敌飞机赢得5分，打掉一只蜜蜂赢得1条命或是获得20次双倍火力，如果撞上敌飞机或小蜜蜂，将减少命、双倍火力清零。每撞到一次蜜蜂或是敌飞机命减1，当命数为0时，则游戏结束。初始界面如图-1所示。
+
+图 – 1
+从图-1可以看出，默认分数为0，默认3条命，请看如图-2所示具体介绍。
+
+图 – 2
+玩家在如图-1所示的界面的任意位置，按下鼠标左键，开始游戏。界面效果如图-3所示。
+
+图 – 3
+开始游戏后，天空中不断有敌飞机和蜜蜂出现，英雄机发射子弹打掉敌飞机和蜜蜂以获取分数、增命或是双倍火力。如果英雄机与飞机或蜜蜂发生碰撞则减少命并且双倍火力清零，直至寿命为0则游戏结束。界面效果如图-4所示。
+
+图 – 4
+此时点击鼠标左键，可以重新进入开始状态。
+另外，在游戏进行过程中，鼠标离开游戏界面，游戏将进入暂停状态，界面效果如图-5所示。
+
+图 – 5
+当鼠标再次移入界面时，游戏将继续进行。
+1.2 方案
+软件的开发过程如下：
+1. 需求(软件功能的文字描述)
+2. 业务需求分析: 找对象，以及对象之间的关系。本项目中对象如下所示：
+  ShootGame
+    |-- 英雄机 Hero
+    |-- 敌飞机 Airplane
+    |-- 蜜蜂Bee
+    |-- 子弹Bullet
+3. 软件概要设计
+数据建模：使用一个数据模型，描述对象的关系。使用绘图坐标系作为参考模型，英雄机、敌飞机、蜜蜂、子弹都是矩形区域，如图-6所示。
+
+图 – 6
+图-6中以蜜蜂为例，标识出了数据x、y、width以及height所表示的位置。英雄机、敌飞机、子弹与蜜蜂的这四个属性类似的。
+4. 类的设计
+本案例中的类、及类之间的关系如图-7所示。
+
+
+1.3 步骤
+实现此案例需要按照如下步骤进行。
+步骤一：新建工程和包
+首先，新建名为Shoot的Java工程； 然后，在工程下的src目录下新建包com.tarena.shoot； 最后，将该工程所需的图片拷贝到该包下，工程结构如图-8所示：
+
+图- 8
+在项目中，包的名字一般为公司域名倒过来，再加上项目名称，即为包名。如图-8中的包名为com.tarena.shoot，其中，com.tarena是达内公司的域名倒过来，shoot为本项目的名称。
+步骤二：创建抽象父类FlyingObject
+由图-6可以分析出英雄机、敌飞机、子弹以及蜜蜂都有x、y、width以及height属性，因此，将这些属性抽象到父类FlyingObject中。另外，它们在界面上都以图片的形式显示，因此在父类FlyingObject中，添加image属性，表示它们的贴图，并提供上述5个属性的getter和setter方法，FlyingObject类的代码如下所示：
+package com.tarena.shoot;
+
+import java.awt.image.BufferedImage;
+
+public abstract class FlyingObject {
+	protected int x;    //x坐标
+	protected int y;    //y坐标
+	protected int width;    //宽
+	protected int height;   //高
+	protected BufferedImage image;   //图片
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	
+	public BufferedImage getImage() {
+		return image;
+	}
+
+	public void setImage(BufferedImage image) {
+		this.image = image;
+	}
+
+}
+步骤三：创建接口Enemy，实现该接口的类为敌人
+创建接口Enemy，表示敌人。如果子弹击中敌飞机，英雄机可以获取分数，因此，在Enemy接口中提供获取分数的方法，代码如下所示：
+/**
+ * 敌人，可以有分数
+ */
+public interface Enemy {
+	/** 敌人的分数  */
+	int getScore();
+}
+步骤四：创建接口 Award，实现该接口的类表示奖励
+创建接口Award，表示奖励。如果子弹击中了蜜蜂，英雄机可以获取奖励。奖励有两种形式，分别是双倍火力或增命，因此，提供获取的奖励类型的方法，代码如下所示：
+package com.tarena.shoot;
+/**
+ * 奖励
+ */
+public interface Award {
+	int DOUBLE_FIRE = 0;  //双倍火力
+	int LIFE = 1;   //1条命
+	/** 获得奖励类型(上面的0或1) */
+	int getType();
+}
+上述代码中，如果奖励类型为0，则表示奖励双倍火力；如果奖励类型为1，则表示奖励1条命。
+步骤五：新建类Airplane,表示敌飞机
+新建类Airplane，表示敌飞机。敌飞机属于飞行物，因此，继承自FlyingObject类；敌飞机也属于敌人，因此，需要实现Enemy接口。敌飞机可以向下移动，因此有移动的速度作为属性，代码如下所示：
+package com.tarena.shoot;
+
+import java.util.Random;
+
+import com.tarena.shoot.ShootGame;
+
+/**
+ * 敌飞机: 是飞行物，也是敌人
+ */
+public class Airplane extends FlyingObject implements Enemy {
+	private int speed = 2; 
+
+	public int getScore() {
+		return 0;
+	}
+}
+步骤六：新建类Bee,表示蜜蜂
+新建类Bee，表示蜜蜂。蜜蜂属于飞行物，因此，继承自FlyingObject类；击中蜜蜂可以获得奖励，因此，需要实现Award接口，并且有奖励类型作为属性。蜜蜂可以左右移动、向下移动，因此有移动的速度作为属性，代码如下所示：
+package com.tarena.shoot;
+
+/** 蜜蜂 */
+public class Bee extends FlyingObject implements Award{
+	private int xSpeed = 1;   //x坐标移动速度
+	private int ySpeed = 2;   //y坐标移动速度
+	private int awardType;    //奖励类型
+	public int getType() {
+		return 0;
+	}
+}
+步骤七：新建类Bullet,表示子弹
+新建类Bullet，表示子弹。子弹属于飞行物，因此，继承自FlyingObject类；子弹可以向上移动，因此有移动的速度作为属性，代码如下所示：
+package com.tarena.shoot;
+
+/**
+ * 子弹类:是飞行物
+ */
+public class Bullet extends FlyingObject {
+	private int speed = 3;  //移动的速度
+}
+步骤八：新建类Hero,表示英雄机
+新建类Hero，表示英雄机。英雄机属于飞行物，因此，继承自FlyingObject类；英雄机发出子弹，击中蜜蜂可以获取双倍火力或增命，因此，将双倍火力的子弹数量和命的数量作为该类的属性，代码如下所示：
+package com.tarena.shoot;
+
+import java.awt.image.BufferedImage;
+
+/**
+ * 英雄机:是飞行物
+ */
+public class Hero extends FlyingObject{
+	protected BufferedImage[] images = {};
+	protected int index = 0;
+ 
+	private int doubleFire;
+	private int life;
+}
+上述代码中，还有images属性和index属性，其中images属性表示Hero的贴图，Hero的贴图由两张图片组成，因此使用数组类型；index属性是使两张图片进行交替显示的计数。
+步骤九：新建类ShootGame，加载图片
+新建类ShootGame，该类继承自JPanel，在该类中，使用静态常量定义面板的宽和高，并使用ImageIO的read方法加载图片，代码如下所示：
+package com.tarena.shoot;
+
+import java.awt.image.BufferedImage;
+
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
+
+public class ShootGame extends JPanel {
+	public static final int WIDTH = 400; // 面板宽
+	public static final int HEIGHT = 654; // 面板高
+
+	public static BufferedImage background;
+	public static BufferedImage start;
+	public static BufferedImage airplane;
+	public static BufferedImage bee;
+	public static BufferedImage bullet;
+	public static BufferedImage hero0;
+	public static BufferedImage hero1;
+	public static BufferedImage pause;
+	public static BufferedImage gameover;
+
+	static {// 静态代码块
+		try {
+			background = ImageIO.read(ShootGame.class
+					.getResource("background.png"));
+			airplane = ImageIO
+					.read(ShootGame.class.getResource("airplane.png"));
+			bee = ImageIO.read(ShootGame.class.getResource("bee.png"));
+			bullet = ImageIO.read(ShootGame.class.getResource("bullet.png"));
+			hero0 = ImageIO.read(ShootGame.class.getResource("hero0.png"));
+			hero1 = ImageIO.read(ShootGame.class.getResource("hero1.png"));
+			pause = ImageIO.read(ShootGame.class.getResource("pause.png"));
+			gameover = ImageIO
+					.read(ShootGame.class.getResource("gameover.png"));
+			start = ImageIO
+					.read(ShootGame.class.getResource("start.png"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
+步骤十：为Bee类添加构造方法，初始化属性
+在Bee类中添加构造方法，将属性进行初始化，请看图-9。
+
+图 – 9
+从图-9可以看出，image属性初始化为ShootGame类加载的图片；width初始化为图片的宽度、height初始化为图片的高度、x坐标的范围为0到（屏幕的宽度 - 蜜蜂的宽度），因此，x坐标初始化为这个范围的随机数；y坐标初始化为蜜蜂的负高度；奖励的类型为2以内的随机数，即为0或者1，代码如下所示：
+	public Bee(){
+		this.image = ShootGame.bee;
+		width = image.getWidth();
+		height = image.getHeight();
+		y = -height;
+		Random rand = new Random();
+		x = rand.nextInt(ShootGame.WIDTH - width);
+		awardType = rand.nextInt(2); 
+	}
+步骤十一：为Airplane类添加构造方法，初始化属性
+在Airplane类中添加构造方法，将属性进行初始化， Airplane的初始化与Bee类似，代码如下所示：
+	public Airplane(){
+		this.image = ShootGame.airplane;
+		width = image.getWidth();
+		height = image.getHeight();
+		y = -height;          
+		x = (int)(Math.random()*(ShootGame.WIDTH - width));
+	}
+步骤十二：为Bullet类添加构造方法，初始化属性
+在Bullet类中添加构造方法，将属性进行初始化，代码如下所示：
+package com.tarena.shoot;
+/**
+ * 子弹类:是飞行物
+ */
+public class Bullet extends FlyingObject {
+	private int speed = 3;  //移动的速度
+	public Bullet(int x,int y){
+		this.x = x;
+		this.y = y;
+		this.image = ShootGame.bullet;
+	}
+}
+步骤十三：为Hero类添加构造方法，初始化属性
+在Hero类中添加构造方法，将属性进行初始化，英雄机的出场位置如图-10所示。
+
+图 – 10
+代码如下所示：
+	public Hero() {
+		life = 3;
+		doubleFire = 0;
+		this.image = ShootGame.hero0;
+		images = new BufferedImage[]{ShootGame.hero0, ShootGame.hero1};
+		width = image.getWidth();
+		height = image.getHeight();
+		x = 150;
+		y = 400;
+	}
+步骤十四：编写main方法
+在ShootGame类中添加main方法，在该方法中设置窗口的大小、居中、点击窗口的右上角“X”关闭窗口以及设置窗口可见，代码如下所示：
+	public static void main(String[] args) {
+		JFrame frame = new JFrame("Fly");
+		ShootGame game = new ShootGame(); // 面板对象
+		frame.add(game); // 将面板添加到JFrame中
+		frame.setSize(WIDTH, HEIGHT); // 大小
+		frame.setAlwaysOnTop(true); // 其总在最上
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 默认关闭操作
+		frame.setLocationRelativeTo(null); // 设置窗体初始位置
+		frame.setVisible(true); // 尽快调用paint
+	}
+运行ShootGame类，运行效果如图-11所示。
+
+图 – 11

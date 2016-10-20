@@ -1,0 +1,64 @@
+步骤二十三：判断英雄机是否与飞行物（蜜蜂和敌飞机）碰撞
+1.当英雄机与飞行物（蜜蜂和敌飞机）发生碰撞时，
+需要减少命的数量以及将双倍火力清零，因此，在Hero类中添加subtractLife方法，
+用于实现减命；添加setDoubleFire用于重新设置双倍火力的值，代码如下所示：
+	1.	    public void subtractLife() { // 减命
+	2.	        life--;
+	3.	    }
+	4.	public void setDoubleFire(int doubleFire) {
+	5.	        this.doubleFire = doubleFire;
+	6.	    }
+2. 在Hero类中添加hit方法用于英雄机与飞行物（蜜蜂和敌飞机）的碰撞检测，
+图-19以蜜蜂为例说明了碰撞算法。
+￼
+图 – 19
+由图-19可以看出，x1、x2以及y1、y2的坐标算法如下：
+	1.	x1=bee.x-1/2hero.width
+	2.	x2=bee.x+1/2hero.width+bee.width
+	3.	
+	4.	y1=bee.y-1/2hero.height
+	5.	y2=bee.y+1/2hero.height+bee.height
+英雄机中心点的x、y坐标算法如下：
+	1.	hero.中心点x=hero.x+1/2hero.width
+	2.	hero.中心点y=hero.y+1/2hero.height
+当满足如下条件时，英雄机与蜜蜂发生碰撞：
+	1.	x1<Hero.中心点x<x2
+	2.	y1<Hero.中心点y<y2
+hit方法的实现代码如下所示：
+	1.	    public boolean hit(FlyingObject other) { // 碰撞算法
+	2.	        int x1 = other.x - this.width / 2;
+	3.	        int x2 = other.x + other.width + this.width / 2;
+	4.	        int y1 = other.y - this.height / 2;
+	5.	        int y2 = other.y + other.height + this.height / 2;
+	6.	        return this.x + this.width / 2 > x1 && this.x + this.width / 2 < x2
+	7.	                && this.y + this.height / 2 > y1
+	8.	                && this.y + this.width / 2 < y2;
+	9.	    }
+3. 在ShootGame类中，添加isGameOver方法，
+该方法用于判断游戏是否结束，方法实现的详细过程如下：
+1） 循环遍历存储所有飞行物（蜜蜂和敌飞机）的数组flyings；
+2） 在循环中，判断英雄机是否与某个飞行物（蜜蜂和敌飞机）发生碰撞，
+如果发生碰撞，则减命、双倍火力清零，并记录被撞飞行物在flyings数组中的索引index，
+该索引默认为-1，即没有发生碰撞；
+3） 判断index是否为-1，如果不为-1，将该索引位置的元素从flyings数组中清除；
+4）判断命数是否小于等于0，并返回比较结果。
+	1.	    /** 检查游戏是否结束 */
+	2.	    public boolean isGameOver() {
+	3.	        for (int i = 0; i < flyings.length; i++) {
+	4.	int index = -1;
+	5.	            FlyingObject obj = flyings[i];
+	6.	            if (hero.hit(obj)) { // 检查英雄机与飞行物是否碰撞
+	7.	                hero.subtractLife();
+	8.	                hero.setDoubleFire(0);
+	9.	                index = i;
+	10.	            }
+	11.	         if(index!=-1){
+	12.	            FlyingObject t = flyings[index];
+	13.	            flyings[index] = flyings[flyings.length-1];
+	14.	            flyings[flyings.length-1] = t;
+	15.	            flyings = Arrays.copyOf(flyings, flyings.length-1);
+	16.	           }
+	17.	        }
+	18.	        
+	19.	        return  hero.getLife() <= 0;
+	20.	    }

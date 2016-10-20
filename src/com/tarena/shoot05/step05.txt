@@ -1,0 +1,31 @@
+运行ShootGame类，会发现界面上实现了连续发射子弹。
+
+步骤十九：添加鼠标移动事件处理 ，当鼠标移动时，英雄机跟随着移动
+1. 在Hero类中，添加moveTo方法，该方法有两个参数x、y，分别表示鼠标的x坐标位置和y坐标位置，如图-15中的红点位置表示鼠标所在的位置，英雄机的中心点。
+
+图 – 15
+从图-15可以看出，要实现英雄机跟随着移动而移动，那么英雄机的坐标算法如下：
+hero.x=鼠标的x坐标-width/2；
+hero.y=鼠标的y坐标-height/2
+moveTo方法的代码如下所示：
+	/**
+	* 当前物体移动了一下，相对距离， x,y鼠标位置
+	*/
+	public void moveTo(int x, int y) {
+		this.x = x - width / 2;
+		this.y = y - height / 2;
+	}
+2.在ShootGame类的action方法，添加鼠标的移动事件处理，代码如下所示：
+	public void action() { // 启动执行代码
+		timer = new Timer(); // 主流程控制
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+					enterAction(); // 飞行物入场
+					stepAction(); // 走一步
+					shootAction(); // 射击
+					bangAction(); 
+				    repaint(); // 重绘，调用paint()方法
+			}
+		}, intervel, intervel);
+	}

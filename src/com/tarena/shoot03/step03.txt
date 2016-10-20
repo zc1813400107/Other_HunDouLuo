@@ -1,0 +1,127 @@
+让界面动起来
+
+从图-12可以发现，在界面上显示了英雄机、敌飞机、蜜蜂以及子弹。
+步骤十七：实现英雄机、敌飞机、蜜蜂、子弹的移动
+1. 由于英雄机、敌飞机、蜜蜂以及子弹都是可以移动的，因此在FlyingObject类中添加抽象方法step，声明飞行物移动一步的方法，代码如下所示：
+	/**
+	* 飞行物移动一步
+	*/
+	public abstract void step();
+3. 在Airplane类中，实现父类FlyingObject的step方法，实现的代码如下所示：
+	@Override
+	public void step() {   //移动
+		y += speed;
+	}
+4. 在Bee类中，实现父类FlyingObject的step方法，实现的代码如下所示：
+	@Override
+	public void step() {      //可斜飞
+		x += xSpeed;
+		y += ySpeed;
+		if(x > ShootGame.WIDTH-width){
+			xSpeed = -1;
+		}
+		if(x < 0){
+			xSpeed = 1;
+		}
+	}
+由于蜜蜂可以左右移动，因此，当移动到屏幕的最右端时，使其向左移动；当移动到屏幕的最左端时，使其向右移动。蜜蜂左右移出屏幕的临界状态如图-13所示。
+
+图 – 13
+从图-13可以看出，当蜜蜂的x坐标小于0或大于屏幕的宽度 – 蜜蜂的宽度时，蜜蜂移出游戏界面。
+5. 在Bullet类中，实现父类FlyingObject的step方法，实现的代码如下所示：
+	@Override
+	public void step(){   //移动方法
+		y-=speed;
+	}
+6. 在Hero类中，实现父类FlyingObject的step方法，实现的代码如下所示：
+	@Override
+	public void step() {
+		if(images.length>0){
+			image = images[index++/10%images.length];
+		}
+	}
+英雄机的step方法，实现了图片的更换，有动画效果。
+7. 在ShootGame类中，添加nextOne方法，该方法用于随机产生蜜蜂和敌飞机，代码如下所示：
+	/**
+	* 随机生成飞行物
+	* 
+	* @return 飞行物对象
+	*/
+	public static FlyingObject nextOne() {
+		Random random = new Random();
+		int type = random.nextInt(20); // [0,19)
+		if (type==0) {
+			return new Bee();
+		}else{
+			return new Airplane();
+		}
+	}
+从代码中可以发现，产生蜜蜂的几率会小一些，只有当产生的随机数为0时，才产生蜜蜂。
+8. 在ShootGame类中，添加enterAction方法，该方法用于实现每调用40次该方法，将随机生成的一个蜜蜂或是敌飞机放入flying数组中，代码如下所示：
+	int flyEnteredIndex = 0; // 飞行物入场计数
+	/** 飞行物入场 */
+	public void enterAction() {
+		flyEnteredIndex++;
+		if (flyEnteredIndex % 40 == 0) { // 400毫秒--10*40
+			FlyingObject obj = nextOne(); // 随机生成一个飞行物
+			flyings = Arrays.copyOf(flyings, flyings.length + 1);扩容
+			flyings[flyings.length - 1] = obj;//放到最后一位
+		}
+	}
+9. 在ShootGame类中，添加stepAction方法，该方法用于实现所有飞行物的移动，代码如下所示：
+public void stepAction() {
+		/** 飞行物走一步 */
+		for (int i = 0; i < flyings.length; i++) {
+			FlyingObject f = flyings[i];
+			f.step();
+		}
+
+		/** 子弹走一步 */
+		for (int i = 0; i < bullets.length; i++) {
+			Bullet b = bullets[i];
+			b.step();
+		}
+		hero.step();
+	}
+10. 在ShootGame类中，添加如下两个属性：
+	private Timer timer; // 定时器
+	private int intervel = 1000/100; // 时间间隔(毫秒)
+另外，添加action方法，该方法使用Timer实现每隔10毫秒入场一个飞机或是蜜蜂，并使所有飞行物移动一步，最后重绘页面，代码如下所示：
+	public void action() { // 启动执行代码
+		timer = new Timer(); // 主流程控制
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+					enterAction(); // 飞行物入场
+					stepAction(); // 走一步
+				repaint(); // 重绘，调用paint()方法
+			}
+		}, intervel, intervel);
+	}
+11.在main方法中调用action方法，代码如下所示：
+	public static void main(String[] args) {
+		JFrame frame = new JFrame("Fly");
+		ShootGame game = new ShootGame(); // 面板对象
+		frame.add(game); // 将面板添加到JFrame中
+		frame.setSize(WIDTH, HEIGHT); // 大小
+		frame.setAlwaysOnTop(true); // 其总在最上
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 默认关闭操作
+		frame.setLocationRelativeTo(null); // 设置窗体初始位置
+		frame.setVisible(true); // 尽快调用paint
+	}
+12.重构Airplane类的构造方法，代码如下所示：
+	/** 初始化数据 */
+	public Airplane(){
+		this.image = ShootGame.airplane;
+		width = image.getWidth();
+		height = image.getHeight();
+	}
+13.重构Bee类的构造方法，代码如下所示：
+	public Bee(){
+		this.image = ShootGame.bee;
+		width = image.getWidth();
+		height = image.getHeight();
+		Random rand = new Random();
+		awardType = rand.nextInt(2); 
+	}
+此时，运行ShootGame类，会发现敌飞机一直向下移动、子弹一直向上移动、蜜蜂是斜着飞的、英雄机的尾翼是有动画效果的。

@@ -1,0 +1,52 @@
+运行ShootGame类，会发现敌飞机一直向下移动、子弹一直向上移动、蜜蜂是斜着飞的、英雄机的尾翼是有动画效果的。
+步骤十八：实现英雄机发射子弹
+1.在Hero类中添加shoot方法，实现发射子弹，英雄机发射子弹的位置如图-14所示。
+
+图 – 14
+从图-14可以看出，将英雄机的宽度分成了四分，在1/2处发出的子弹是单倍火力的发射点；在1/4和3/4处发出的子弹是双倍火力的发射点，shoot方法的代码如下所示：
+	public Bullet[] shoot() { // 发射子弹
+		int xStep = width / 4; 
+		int yStep = 20;
+		if (doubleFire>0) {
+			Bullet[] bullets = new Bullet[2];
+			bullets[0] = new Bullet(x + xStep, y - yStep);
+			bullets[1] = new Bullet(x + 3 * xStep, y - yStep);
+			doubleFire -= 2;
+			return bullets;
+		} else { // 单倍
+			Bullet[] bullets = new Bullet[1];
+// y-yStep(子弹到飞机的位置)
+			bullets[0] = new Bullet(x + 2 * xStep, y - yStep); 
+			return bullets;
+		}
+	}
+2.在ShootGame类中添加shootAction方法，实现每调用30次该方法发射一次子弹，并将发射的子弹存储到bullets数组中，shootAction方法的代码如下所示：
+	int shootIndex = 0; // 射击计数
+	/** 射击 */
+	public void shootAction() {
+		shootIndex++;
+		if (shootIndex % 30 == 0) { // 100毫秒发一颗
+			Bullet[] bs = hero.shoot(); // 英雄打出子弹
+			bullets = Arrays.copyOf(bullets, bullets.length + bs.length); // 扩容
+			System.arraycopy(bs, 0, bullets, bullets.length - bs.length,
+					bs.length); // 追加数组
+		}
+	}
+3. 在ShootGame类中的action方法调用shootAction方法，代码如下所示：
+	public void action() { // 启动执行代码
+		timer = new Timer(); // 主流程控制
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+					enterAction(); // 飞行物入场
+					stepAction(); // 走一步
+				    repaint(); // 重绘，调用paint()方法
+			}
+		}, intervel, intervel);
+	}
+4. 重构ShootGame类的构造方法，将其中的代码注释掉，注释的代码如下所示：
+	public ShootGame(){
+		//初始化一只蜜蜂一架飞机
+		//初始化一颗子弹
+	}
+此时，运行ShootGame类，会发现界面上实现了连续发射子弹。

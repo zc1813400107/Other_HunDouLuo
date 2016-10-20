@@ -1,0 +1,26 @@
+步骤二十一：实现画分数和命数
+1.在Hero类中，添加getLife方法，该方法用于获取英雄机的命数，代码如下所示：
+	public int getLife() {
+		return life;
+	}
+2.在ShootGame类中，添加paintScore方法，该方法用于画分数和命数，代码如下所示：
+	/** 画分数 */
+	public void paintScore(Graphics g) {
+		int x = 10;
+		int y = 25;
+		Font font = new Font(Font.SANS_SERIF,Font.BOLD, 14);
+		g.setColor(new Color(0x3A3B3B));
+		g.setFont(font); // 设置字体
+		g.drawString("SCORE:" + score, x, y); // 画分数
+		y+=20;
+		g.drawString("LIFE:" + hero.getLife(), x, y);
+	}
+3.在ShootGame类的paint方法中，调用paintScore方法，代码如下所示：
+	@Override
+	public void paint(Graphics g) {
+		g.drawImage(background, 0, 0, null); // 画背景图
+		paintHero(g); // 画英雄机
+		paintBullets(g); // 画子弹
+		paintFlyingObjects(g); // 画飞行物
+	}
+步骤二十二：删除越界飞行物（蜜蜂和敌飞机）和子弹

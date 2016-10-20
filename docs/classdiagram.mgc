@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassDiagram>
+    <Class name="com.tarena.shoot.FlyingObject" x="420" y="136">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="com.tarena.shoot.Airplane" x="337" y="381">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Extension destinationClassName="com.tarena.shoot.FlyingObject"/>
+        <Extension destinationClassName="com.tarena.shoot.Enemy"/>
+    </Class>
+    <Class name="com.tarena.shoot.Bullet" x="642" y="371">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Extension destinationClassName="com.tarena.shoot.FlyingObject"/>
+    </Class>
+    <Class name="com.tarena.shoot.Enemy" x="370" y="316">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="com.tarena.shoot.Award" x="232" y="263">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="com.tarena.shoot.Bee" x="193" y="351">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Extension destinationClassName="com.tarena.shoot.FlyingObject"/>
+        <Extension destinationClassName="com.tarena.shoot.Award"/>
+    </Class>
+    <Class name="com.tarena.shoot.Hero" x="481" y="367">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Extension destinationClassName="com.tarena.shoot.FlyingObject"/>
+    </Class>
+    <Class name="com.tarena.shoot.ShootGame" x="625" y="56">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="com.tarena.shoot.FlyingObject"
+            endpointName="flyings" kind="Simple"/>
+        <Association destinationClassName="com.tarena.shoot.Hero"
+            endpointName="hero" kind="Simple"/>
+        <Association destinationClassName="com.tarena.shoot.Bullet"
+            endpointName="bullets" kind="Simple"/>
+        <Communication destinationClassName="com.tarena.shoot.FlyingObject"/>
+        <Communication destinationClassName="com.tarena.shoot.Bullet"/>
+        <Communication destinationClassName="com.tarena.shoot.Enemy"/>
+        <Communication destinationClassName="com.tarena.shoot.Award"/>
+        <Communication destinationClassName="com.tarena.shoot.Hero"/>
+    </Class>
+</ClassDiagram>

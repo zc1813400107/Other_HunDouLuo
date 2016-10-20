@@ -1,0 +1,1017 @@
+
+		 学员中心 
+		 技术问答 
+		 呼叫老师 
+		 资料下载 
+		 在线考试 
+		 有奖征文 
+		 选修课程 
+		  更  多  
+打
+开
+全
+部
+课
+程
+集团教学及服务质量监督热线：4008270010 或 ts@tarena.com.cn
+
+
+Day 13 : SHOOT项目（上）
+		经典案例Classic Case 
+		经典视频
+JAVA SHOOT Unit01
+Top
+	1.	Shoot项目 
+1 Shoot项目
+1.1 问题
+Shoot游戏是一款十分有趣的射击类小游戏，流畅的画面，高难度的挑战。游戏中，玩家驾驶英雄机，在空中进行战斗。点击并移动自己的英雄机，发射炮弹，打掉敌飞机以及蜜蜂，来获得分数和奖励，打掉一架敌飞机赢得5分，打掉一只蜜蜂赢得1条命或是获得20次双倍火力，如果撞上敌飞机或小蜜蜂，将减少命、双倍火力清零。每撞到一次蜜蜂或是敌飞机命减1，当命数为0时，则游戏结束。初始界面如图-1所示。
+￼
+图 – 1
+从图-1可以看出，默认分数为0，默认3条命，请看如图-2所示具体介绍。
+￼
+图 – 2
+玩家在如图-1所示的界面的任意位置，按下鼠标左键，开始游戏。界面效果如图-3所示。
+￼
+图 – 3
+开始游戏后，天空中不断有敌飞机和蜜蜂出现，英雄机发射子弹打掉敌飞机和蜜蜂以获取分数、增命或是双倍火力。如果英雄机与飞机或蜜蜂发生碰撞则减少命并且双倍火力清零，直至寿命为0则游戏结束。界面效果如图-4所示。
+￼
+图 – 4
+此时点击鼠标左键，可以重新进入开始状态。
+另外，在游戏进行过程中，鼠标离开游戏界面，游戏将进入暂停状态，界面效果如图-5所示。
+￼
+图 – 5
+当鼠标再次移入界面时，游戏将继续进行。
+1.2 方案
+软件的开发过程如下：
+1. 需求(软件功能的文字描述)
+2. 业务需求分析: 找对象，以及对象之间的关系。本项目中对象如下所示：
+	1.	  ShootGame
+	2.	    |-- 英雄机 Hero
+	3.	    |-- 敌飞机 Airplane
+	4.	    |-- 蜜蜂Bee
+	5.	    |-- 子弹Bullet
+3. 软件概要设计
+数据建模：使用一个数据模型，描述对象的关系。使用绘图坐标系作为参考模型，英雄机、敌飞机、蜜蜂、子弹都是矩形区域，如图-6所示。
+￼
+图 – 6
+图-6中以蜜蜂为例，标识出了数据x、y、width以及height所表示的位置。英雄机、敌飞机、子弹与蜜蜂的这四个属性类似的。
+4. 类的设计
+本案例中的类、及类之间的关系如图-7所示。
+￼
+
+1.3 步骤
+实现此案例需要按照如下步骤进行。
+步骤一：新建工程和包
+首先，新建名为Shoot的Java工程； 然后，在工程下的src目录下新建包com.tarena.shoot； 最后，将该工程所需的图片拷贝到该包下，工程结构如图-8所示：
+￼
+图- 8
+在项目中，包的名字一般为公司域名倒过来，再加上项目名称，即为包名。如图-8中的包名为com.tarena.shoot，其中，com.tarena是达内公司的域名倒过来，shoot为本项目的名称。
+步骤二：创建抽象父类FlyingObject
+由图-6可以分析出英雄机、敌飞机、子弹以及蜜蜂都有x、y、width以及height属性，因此，将这些属性抽象到父类FlyingObject中。另外，它们在界面上都以图片的形式显示，因此在父类FlyingObject中，添加image属性，表示它们的贴图，并提供上述5个属性的getter和setter方法，FlyingObject类的代码如下所示：
+	1.	package com.tarena.shoot;
+	2.	
+	3.	import java.awt.image.BufferedImage;
+	4.	
+	5.	public abstract class FlyingObject {
+	6.	    protected int x;    //x坐标
+	7.	    protected int y;    //y坐标
+	8.	    protected int width;    //宽
+	9.	    protected int height;   //高
+	10.	    protected BufferedImage image;   //图片
+	11.	    public int getX() {
+	12.	        return x;
+	13.	    }
+	14.	
+	15.	    public void setX(int x) {
+	16.	        this.x = x;
+	17.	    }
+	18.	
+	19.	    public int getY() {
+	20.	        return y;
+	21.	    }
+	22.	
+	23.	    public void setY(int y) {
+	24.	        this.y = y;
+	25.	    }
+	26.	
+	27.	    public int getWidth() {
+	28.	        return width;
+	29.	    }
+	30.	
+	31.	    public void setWidth(int width) {
+	32.	        this.width = width;
+	33.	    }
+	34.	
+	35.	    public int getHeight() {
+	36.	        return height;
+	37.	    }
+	38.	
+	39.	    public void setHeight(int height) {
+	40.	        this.height = height;
+	41.	    }
+	42.	
+	43.	    
+	44.	    public BufferedImage getImage() {
+	45.	        return image;
+	46.	    }
+	47.	
+	48.	    public void setImage(BufferedImage image) {
+	49.	        this.image = image;
+	50.	    }
+	51.	
+	52.	}
+步骤三：创建接口Enemy，实现该接口的类为敌人
+创建接口Enemy，表示敌人。如果子弹击中敌飞机，英雄机可以获取分数，因此，在Enemy接口中提供获取分数的方法，代码如下所示：
+	1.	/**
+	2.	 * 敌人，可以有分数
+	3.	 */
+	4.	public interface Enemy {
+	5.	    /** 敌人的分数  */
+	6.	    int getScore();
+	7.	}
+步骤四：创建接口 Award，实现该接口的类表示奖励
+创建接口Award，表示奖励。如果子弹击中了蜜蜂，英雄机可以获取奖励。奖励有两种形式，分别是双倍火力或增命，因此，提供获取的奖励类型的方法，代码如下所示：
+	1.	package com.tarena.shoot;
+	2.	/**
+	3.	 * 奖励
+	4.	 */
+	5.	public interface Award {
+	6.	    int DOUBLE_FIRE = 0;  //双倍火力
+	7.	    int LIFE = 1;   //1条命
+	8.	    /** 获得奖励类型(上面的0或1) */
+	9.	    int getType();
+	10.	}
+上述代码中，如果奖励类型为0，则表示奖励双倍火力；如果奖励类型为1，则表示奖励1条命。
+步骤五：新建类Airplane,表示敌飞机
+新建类Airplane，表示敌飞机。敌飞机属于飞行物，因此，继承自FlyingObject类；敌飞机也属于敌人，因此，需要实现Enemy接口。敌飞机可以向下移动，因此有移动的速度作为属性，代码如下所示：
+	1.	package com.tarena.shoot;
+	2.	
+	3.	import java.util.Random;
+	4.	
+	5.	import com.tarena.shoot.ShootGame;
+	6.	
+	7.	/**
+	8.	 * 敌飞机: 是飞行物，也是敌人
+	9.	 */
+	10.	public class Airplane extends FlyingObject implements Enemy {
+	11.	    private int speed = 2; 
+	12.	
+	13.	    public int getScore() {
+	14.	        return 0;
+	15.	    }
+	16.	}
+步骤六：新建类Bee,表示蜜蜂
+新建类Bee，表示蜜蜂。蜜蜂属于飞行物，因此，继承自FlyingObject类；击中蜜蜂可以获得奖励，因此，需要实现Award接口，并且有奖励类型作为属性。蜜蜂可以左右移动、向下移动，因此有移动的速度作为属性，代码如下所示：
+	1.	package com.tarena.shoot;
+	2.	
+	3.	/** 蜜蜂 */
+	4.	public class Bee extends FlyingObject implements Award{
+	5.	    private int xSpeed = 1;   //x坐标移动速度
+	6.	    private int ySpeed = 2;   //y坐标移动速度
+	7.	    private int awardType;    //奖励类型
+	8.	    public int getType() {
+	9.	        return 0;
+	10.	    }
+	11.	}
+步骤七：新建类Bullet,表示子弹
+新建类Bullet，表示子弹。子弹属于飞行物，因此，继承自FlyingObject类；子弹可以向上移动，因此有移动的速度作为属性，代码如下所示：
+	1.	package com.tarena.shoot;
+	2.	
+	3.	/**
+	4.	 * 子弹类:是飞行物
+	5.	 */
+	6.	public class Bullet extends FlyingObject {
+	7.	    private int speed = 3;  //移动的速度
+	8.	}
+步骤八：新建类Hero,表示英雄机
+新建类Hero，表示英雄机。英雄机属于飞行物，因此，继承自FlyingObject类；英雄机发出子弹，击中蜜蜂可以获取双倍火力或增命，因此，将双倍火力的子弹数量和命的数量作为该类的属性，代码如下所示：
+	1.	package com.tarena.shoot;
+	2.	
+	3.	import java.awt.image.BufferedImage;
+	4.	
+	5.	/**
+	6.	 * 英雄机:是飞行物
+	7.	 */
+	8.	public class Hero extends FlyingObject{
+	9.	    protected BufferedImage[] images = {};
+	10.	    protected int index = 0;
+	11.	
+	12.	    private int doubleFire;
+	13.	    private int life;
+	14.	}
+上述代码中，还有images属性和index属性，其中images属性表示Hero的贴图，Hero的贴图由两张图片组成，因此使用数组类型；index属性是使两张图片进行交替显示的计数。
+步骤九：新建类ShootGame，加载图片
+新建类ShootGame，该类继承自JPanel，在该类中，使用静态常量定义面板的宽和高，并使用ImageIO的read方法加载图片，代码如下所示：
+	1.	package com.tarena.shoot;
+	2.	
+	3.	import java.awt.image.BufferedImage;
+	4.	
+	5.	import javax.imageio.ImageIO;
+	6.	import javax.swing.JPanel;
+	7.	
+	8.	public class ShootGame extends JPanel {
+	9.	    public static final int WIDTH = 400; // 面板宽
+	10.	    public static final int HEIGHT = 654; // 面板高
+	11.	
+	12.	    public static BufferedImage background;
+	13.	    public static BufferedImage start;
+	14.	    public static BufferedImage airplane;
+	15.	    public static BufferedImage bee;
+	16.	    public static BufferedImage bullet;
+	17.	    public static BufferedImage hero0;
+	18.	    public static BufferedImage hero1;
+	19.	    public static BufferedImage pause;
+	20.	    public static BufferedImage gameover;
+	21.	
+	22.	    static {// 静态代码块
+	23.	        try {
+	24.	            background = ImageIO.read(ShootGame.class
+	25.	                    .getResource("background.png"));
+	26.	            airplane = ImageIO
+	27.	                    .read(ShootGame.class.getResource("airplane.png"));
+	28.	            bee = ImageIO.read(ShootGame.class.getResource("bee.png"));
+	29.	            bullet = ImageIO.read(ShootGame.class.getResource("bullet.png"));
+	30.	            hero0 = ImageIO.read(ShootGame.class.getResource("hero0.png"));
+	31.	            hero1 = ImageIO.read(ShootGame.class.getResource("hero1.png"));
+	32.	            pause = ImageIO.read(ShootGame.class.getResource("pause.png"));
+	33.	            gameover = ImageIO
+	34.	                    .read(ShootGame.class.getResource("gameover.png"));
+	35.	            start = ImageIO
+	36.	                    .read(ShootGame.class.getResource("start.png"));
+	37.	        } catch (Exception e) {
+	38.	            e.printStackTrace();
+	39.	        }
+	40.	    }
+	41.	}
+步骤十：为Bee类添加构造方法，初始化属性
+在Bee类中添加构造方法，将属性进行初始化，请看图-9。
+￼
+图 – 9
+从图-9可以看出，image属性初始化为ShootGame类加载的图片；width初始化为图片的宽度、height初始化为图片的高度、x坐标的范围为0到（屏幕的宽度 - 蜜蜂的宽度），因此，x坐标初始化为这个范围的随机数；y坐标初始化为蜜蜂的负高度；奖励的类型为2以内的随机数，即为0或者1，代码如下所示：
+	1.	    public Bee(){
+	2.	        this.image = ShootGame.bee;
+	3.	        width = image.getWidth();
+	4.	        height = image.getHeight();
+	5.	        y = -height;
+	6.	        Random rand = new Random();
+	7.	        x = rand.nextInt(ShootGame.WIDTH - width);
+	8.	        awardType = rand.nextInt(2); 
+	9.	    }
+步骤十一：为Airplane类添加构造方法，初始化属性
+在Airplane类中添加构造方法，将属性进行初始化， Airplane的初始化与Bee类似，代码如下所示：
+	1.	    public Airplane(){
+	2.	        this.image = ShootGame.airplane;
+	3.	        width = image.getWidth();
+	4.	        height = image.getHeight();
+	5.	        y = -height;          
+	6.	        x = (int)(Math.random()*(ShootGame.WIDTH - width));
+	7.	    }
+步骤十二：为Bullet类添加构造方法，初始化属性
+在Bullet类中添加构造方法，将属性进行初始化，代码如下所示：
+	1.	package com.tarena.shoot;
+	2.	/**
+	3.	 * 子弹类:是飞行物
+	4.	 */
+	5.	public class Bullet extends FlyingObject {
+	6.	    private int speed = 3;  //移动的速度
+	7.	    public Bullet(int x,int y){
+	8.	        this.x = x;
+	9.	        this.y = y;
+	10.	        this.image = ShootGame.bullet;
+	11.	    }
+	12.	}
+步骤十三：为Hero类添加构造方法，初始化属性
+在Hero类中添加构造方法，将属性进行初始化，英雄机的出场位置如图-10所示。
+￼
+图 – 10
+代码如下所示：
+	1.	    public Hero() {
+	2.	        life = 3;
+	3.	        doubleFire = 0;
+	4.	        this.image = ShootGame.hero0;
+	5.	        images = new BufferedImage[]{ShootGame.hero0, ShootGame.hero1};
+	6.	        width = image.getWidth();
+	7.	        height = image.getHeight();
+	8.	        x = 150;
+	9.	        y = 400;
+	10.	    }
+步骤十四：编写main方法
+在ShootGame类中添加main方法，在该方法中设置窗口的大小、居中、点击窗口的右上角“X”关闭窗口以及设置窗口可见，代码如下所示：
+	1.	    public static void main(String[] args) {
+	2.	        JFrame frame = new JFrame("Fly");
+	3.	        ShootGame game = new ShootGame(); // 面板对象
+	4.	        frame.add(game); // 将面板添加到JFrame中
+	5.	        frame.setSize(WIDTH, HEIGHT); // 大小
+	6.	        frame.setAlwaysOnTop(true); // 其总在最上
+	7.	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 默认关闭操作
+	8.	        frame.setLocationRelativeTo(null); // 设置窗体初始位置
+	9.	        frame.setVisible(true); // 尽快调用paint
+	10.	    }
+运行ShootGame类，运行效果如图-11所示。
+￼
+图 – 11
+步骤十五：绘制界面
+绘制界面的过程如下：
+1. 在ShootGame类中，添加FlyingObject[]类型的属性flyings，用于存储射击游戏中的所有敌飞机和蜜蜂；
+2. 在ShootGame类中，添加Bullet[]类型的属性bullets，用于存储射击游戏中的所有的子弹；
+3. 在ShootGame类中，添加Hero类型的属性hero，表示英雄机；
+4. 在ShootGame类中，添加paintHero方法、paintBullets方法、paintFlyingObjects方法，分别用于实现在面板上画英雄机、子弹、敌飞机、蜜蜂；并重写paint方法，在该方法中调用上述三个方法；
+5. 在ShootGame类中，添加构造初始化属性flyings、bullets以及hero；
+6. 重构Airplane类和Bee类，设置固定的x、y坐标位置，以便显示查看。
+ShootGame类中添加的代码如下所示：
+	1.	package com.tarena.shoot;
+	2.	
+	3.	import java.awt.Graphics;
+	4.	import java.awt.image.BufferedImage;
+	5.	
+	6.	import javax.imageio.ImageIO;
+	7.	import javax.swing.JFrame;
+	8.	import javax.swing.JPanel;
+	9.	
+	10.	public class ShootGame extends JPanel {
+	11.	    public static final int WIDTH = 400; // 面板宽
+	12.	    public static final int HEIGHT = 654; // 面板高
+	13.	
+	14.	    public static BufferedImage background;
+	15.	    public static BufferedImage start;
+	16.	    public static BufferedImage airplane;
+	17.	    public static BufferedImage bee;
+	18.	    public static BufferedImage bullet;
+	19.	    public static BufferedImage hero0;
+	20.	    public static BufferedImage hero1;
+	21.	    public static BufferedImage pause;
+	22.	    public static BufferedImage gameover;
+	23.	    
+	24.	    
+	25.	    static {// 静态代码块
+	26.	        ... ...
+	27.	    }
+	28.	
+	29.	
+	30.	    public static void main(String[] args) {
+	31.	        ... ...
+	32.	    }
+	33.	}
+Bee类修改的代码如下所示：
+	1.	package com.tarena.shoot;
+	2.	
+	3.	import java.util.Random;
+	4.	
+	5.	/** 蜜蜂 */
+	6.	public class Bee extends FlyingObject implements Award{
+	7.	    private int xSpeed = 1;   //x坐标移动速度
+	8.	    private int ySpeed = 2;   //y坐标移动速度
+	9.	    private int awardType;    //奖励类型
+	10.	    public Bee(){
+	11.	        this.image = ShootGame.bee;
+	12.	        width = image.getWidth();
+	13.	        height = image.getHeight();
+	14.	        Random rand = new Random();
+	15.	        awardType = rand.nextInt(2); 
+	16.	    }
+	17.	    public int getType() {
+	18.	        return 0;
+	19.	    }
+	20.	}
+Airplane修改的代码如下所示：
+	1.	package com.tarena.shoot;
+	2.	
+	3.	import java.util.Random;
+	4.	
+	5.	import com.tarena.shoot.ShootGame;
+	6.	
+	7.	/**
+	8.	 * 敌飞机: 是飞行物，也是敌人
+	9.	 */
+	10.	public class Airplane extends FlyingObject implements Enemy {
+	11.	    private int speed = 2;
+	12.	
+	13.	    /** 初始化数据 */
+	14.	    public Airplane(){
+	15.	        this.image = ShootGame.airplane;
+	16.	        width = image.getWidth();
+	17.	        height = image.getHeight();
+	18.	    }
+	19.	
+	20.	    public int getScore() {
+	21.	        return 0;
+	22.	    }
+	23.	}
+步骤十六：运行
+运行ShootGame类，显示的界面效果如图-12所示。
+￼
+图 – 12
+从图-12可以发现，在界面上显示了英雄机、敌飞机、蜜蜂以及子弹。
+步骤十七：实现英雄机、敌飞机、蜜蜂、子弹的移动
+1. 由于英雄机、敌飞机、蜜蜂以及子弹都是可以移动的，因此在FlyingObject类中添加抽象方法step，声明飞行物移动一步的方法，代码如下所示：
+	1.	    /**
+	2.	     * 飞行物移动一步
+	3.	     */
+	4.	    public abstract void step();
+3. 在Airplane类中，实现父类FlyingObject的step方法，实现的代码如下所示：
+	1.	    @Override
+	2.	    public void step() {   //移动
+	3.	        y += speed;
+	4.	    }
+4. 在Bee类中，实现父类FlyingObject的step方法，实现的代码如下所示：
+	1.	    @Override
+	2.	    public void step() {      //可斜飞
+	3.	        x += xSpeed;
+	4.	        y += ySpeed;
+	5.	        if(x > ShootGame.WIDTH-width){
+	6.	            xSpeed = -1;
+	7.	        }
+	8.	        if(x < 0){
+	9.	            xSpeed = 1;
+	10.	        }
+	11.	    }
+由于蜜蜂可以左右移动，因此，当移动到屏幕的最右端时，使其向左移动；当移动到屏幕的最左端时，使其向右移动。蜜蜂左右移出屏幕的临界状态如图-13所示。
+￼
+图 – 13
+从图-13可以看出，当蜜蜂的x坐标小于0或大于屏幕的宽度 – 蜜蜂的宽度时，蜜蜂移出游戏界面。
+5. 在Bullet类中，实现父类FlyingObject的step方法，实现的代码如下所示：
+	1.	    @Override
+	2.	    public void step(){   //移动方法
+	3.	        y-=speed;
+	4.	    }
+6. 在Hero类中，实现父类FlyingObject的step方法，实现的代码如下所示：
+	1.	    @Override
+	2.	    public void step() {
+	3.	        if(images.length>0){
+	4.	            image = images[index++/10%images.length];
+	5.	        }
+	6.	    }
+英雄机的step方法，实现了图片的更换，有动画效果。
+7. 在ShootGame类中，添加nextOne方法，该方法用于随机产生蜜蜂和敌飞机，代码如下所示：
+	1.	    /**
+	2.	     * 随机生成飞行物
+	3.	     * 
+	4.	     * @return 飞行物对象
+	5.	     */
+	6.	    public static FlyingObject nextOne() {
+	7.	        Random random = new Random();
+	8.	        int type = random.nextInt(20); // [0,19)
+	9.	        if (type==0) {
+	10.	            return new Bee();
+	11.	        }else{
+	12.	            return new Airplane();
+	13.	        }
+	14.	    }
+从代码中可以发现，产生蜜蜂的几率会小一些，只有当产生的随机数为0时，才产生蜜蜂。
+8. 在ShootGame类中，添加enterAction方法，该方法用于实现每调用40次该方法，将随机生成的一个蜜蜂或是敌飞机放入flying数组中，代码如下所示：
+	1.	    int flyEnteredIndex = 0; // 飞行物入场计数
+	2.	    /** 飞行物入场 */
+	3.	    public void enterAction() {
+	4.	        flyEnteredIndex++;
+	5.	        if (flyEnteredIndex % 40 == 0) { // 400毫秒--10*40
+	6.	            FlyingObject obj = nextOne(); // 随机生成一个飞行物
+	7.	            flyings = Arrays.copyOf(flyings, flyings.length + 1);扩容
+	8.	            flyings[flyings.length - 1] = obj;//放到最后一位
+	9.	        }
+	10.	    }
+9. 在ShootGame类中，添加stepAction方法，该方法用于实现所有飞行物的移动，代码如下所示：
+	1.	public void stepAction() {
+	2.	        /** 飞行物走一步 */
+	3.	        for (int i = 0; i < flyings.length; i++) {
+	4.	            FlyingObject f = flyings[i];
+	5.	            f.step();
+	6.	        }
+	7.	
+	8.	        /** 子弹走一步 */
+	9.	        for (int i = 0; i < bullets.length; i++) {
+	10.	            Bullet b = bullets[i];
+	11.	            b.step();
+	12.	        }
+	13.	        hero.step();
+	14.	    }
+10. 在ShootGame类中，添加如下两个属性：
+	1.	    private Timer timer; // 定时器
+	2.	    private int intervel = 1000/100; // 时间间隔(毫秒)
+另外，添加action方法，该方法使用Timer实现每隔10毫秒入场一个飞机或是蜜蜂，并使所有飞行物移动一步，最后重绘页面，代码如下所示：
+	1.	    public void action() { // 启动执行代码
+	2.	        timer = new Timer(); // 主流程控制
+	3.	        timer.schedule(new TimerTask() {
+	4.	            @Override
+	5.	            public void run() {
+	6.	                    enterAction(); // 飞行物入场
+	7.	                    stepAction(); // 走一步
+	8.	                repaint(); // 重绘，调用paint()方法
+	9.	            }
+	10.	        }, intervel, intervel);
+	11.	    }
+11.在main方法中调用action方法，代码如下所示：
+	1.	    public static void main(String[] args) {
+	2.	        JFrame frame = new JFrame("Fly");
+	3.	        ShootGame game = new ShootGame(); // 面板对象
+	4.	        frame.add(game); // 将面板添加到JFrame中
+	5.	        frame.setSize(WIDTH, HEIGHT); // 大小
+	6.	        frame.setAlwaysOnTop(true); // 其总在最上
+	7.	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // 默认关闭操作
+	8.	        frame.setLocationRelativeTo(null); // 设置窗体初始位置
+	9.	        frame.setVisible(true); // 尽快调用paint
+	10.	    }
+12.重构Airplane类的构造方法，代码如下所示：
+	1.	    /** 初始化数据 */
+	2.	    public Airplane(){
+	3.	        this.image = ShootGame.airplane;
+	4.	        width = image.getWidth();
+	5.	        height = image.getHeight();
+	6.	    }
+13.重构Bee类的构造方法，代码如下所示：
+	1.	    public Bee(){
+	2.	        this.image = ShootGame.bee;
+	3.	        width = image.getWidth();
+	4.	        height = image.getHeight();
+	5.	        Random rand = new Random();
+	6.	        awardType = rand.nextInt(2); 
+	7.	    }
+此时，运行ShootGame类，会发现敌飞机一直向下移动、子弹一直向上移动、蜜蜂是斜着飞的、英雄机的尾翼是有动画效果的。
+步骤十八：实现英雄机发射子弹
+1.在Hero类中添加shoot方法，实现发射子弹，英雄机发射子弹的位置如图-14所示。
+￼
+图 – 14
+从图-14可以看出，将英雄机的宽度分成了四分，在1/2处发出的子弹是单倍火力的发射点；在1/4和3/4处发出的子弹是双倍火力的发射点，shoot方法的代码如下所示：
+	1.	    public Bullet[] shoot() { // 发射子弹
+	2.	        int xStep = width / 4; 
+	3.	        int yStep = 20;
+	4.	        if (doubleFire>0) {
+	5.	            Bullet[] bullets = new Bullet[2];
+	6.	            bullets[0] = new Bullet(x + xStep, y - yStep);
+	7.	            bullets[1] = new Bullet(x + 3 * xStep, y - yStep);
+	8.	            doubleFire -= 2;
+	9.	            return bullets;
+	10.	        } else { // 单倍
+	11.	            Bullet[] bullets = new Bullet[1];
+	12.	// y-yStep(子弹到飞机的位置)
+	13.	            bullets[0] = new Bullet(x + 2 * xStep, y - yStep); 
+	14.	            return bullets;
+	15.	        }
+	16.	    }
+2.在ShootGame类中添加shootAction方法，实现每调用30次该方法发射一次子弹，并将发射的子弹存储到bullets数组中，shootAction方法的代码如下所示：
+	1.	    int shootIndex = 0; // 射击计数
+	2.	    /** 射击 */
+	3.	    public void shootAction() {
+	4.	        shootIndex++;
+	5.	        if (shootIndex % 30 == 0) { // 100毫秒发一颗
+	6.	            Bullet[] bs = hero.shoot(); // 英雄打出子弹
+	7.	            bullets = Arrays.copyOf(bullets, bullets.length + bs.length); // 扩容
+	8.	            System.arraycopy(bs, 0, bullets, bullets.length - bs.length,
+	9.	                    bs.length); // 追加数组
+	10.	        }
+	11.	    }
+3. 在ShootGame类中的action方法调用shootAction方法，代码如下所示：
+	1.	    public void action() { // 启动执行代码
+	2.	        timer = new Timer(); // 主流程控制
+	3.	        timer.schedule(new TimerTask() {
+	4.	            @Override
+	5.	            public void run() {
+	6.	                    enterAction(); // 飞行物入场
+	7.	                    stepAction(); // 走一步
+	8.	                    repaint(); // 重绘，调用paint()方法
+	9.	            }
+	10.	        }, intervel, intervel);
+	11.	    }
+4. 重构ShootGame类的构造方法，将其中的代码注释掉，注释的代码如下所示：
+	1.	    public ShootGame(){
+	2.	        //初始化一只蜜蜂一架飞机
+	3.	        //初始化一颗子弹
+	4.	    }
+此时，运行ShootGame类，会发现界面上实现了连续发射子弹。
+步骤十九：添加鼠标移动事件处理 ，当鼠标移动时，英雄机跟随着移动
+1. 在Hero类中，添加moveTo方法，该方法有两个参数x、y，分别表示鼠标的x坐标位置和y坐标位置，如图-15中的红点位置表示鼠标所在的位置，英雄机的中心点。
+￼
+图 – 15
+从图-15可以看出，要实现英雄机跟随着移动而移动，那么英雄机的坐标算法如下：
+	1.	hero.x=鼠标的x坐标-width/2；
+	2.	hero.y=鼠标的y坐标-height/2
+moveTo方法的代码如下所示：
+	1.	    /**
+	2.	     * 当前物体移动了一下，相对距离， x,y鼠标位置
+	3.	     */
+	4.	    public void moveTo(int x, int y) {
+	5.	        this.x = x - width / 2;
+	6.	        this.y = y - height / 2;
+	7.	    }
+2.在ShootGame类的action方法，添加鼠标的移动事件处理，代码如下所示：
+	1.	    public void action() { // 启动执行代码
+	2.	        timer = new Timer(); // 主流程控制
+	3.	        timer.schedule(new TimerTask() {
+	4.	            @Override
+	5.	            public void run() {
+	6.	                    enterAction(); // 飞行物入场
+	7.	                    stepAction(); // 走一步
+	8.	                    shootAction(); // 射击
+	9.	                    bangAction(); 
+	10.	                    repaint(); // 重绘，调用paint()方法
+	11.	            }
+	12.	        }, intervel, intervel);
+	13.	    }
+步骤二十：实现子弹打敌飞机和蜜蜂
+1. 由于蜜蜂和敌飞机都可以被子弹击中，因此在FlyingObject类中添加shootBy方法，该方法的参数为子弹类型。图-16以蜜蜂为例，说明了被子弹击中的算法。
+￼
+图 – 16
+由图-16可以看出，当子弹的x坐标在蜜蜂的x与x+width之间，并且子弹的y坐标在蜜蜂的y与y+height之间时，子弹击中了蜜蜂，即：
+	1.	bee.x<bullet.x<bee.x+width
+	2.	&&
+	3.	bee.y<bullet.y<bee.y+height
+在代码中把蜜蜂换成this就可以了，shootBy方法代码如下所示：
+	1.	    /**
+	2.	     * 检查当前飞行物体是否被子弹(x,y)击(shoot)中，
+	3.	     * true表示击中，飞行物可以被击中
+	4.	     * @param Bullet 子弹对象
+	5.	     * @return true表示被击中了
+	6.	     */
+	7.	    public boolean shootBy(Bullet bullet){
+	8.	        int x = bullet.x;  //子弹横坐标
+	9.	        int y = bullet.y;  //子弹纵坐标
+	10.	        return this.x<x && x<this.x+width && this.y<y && y<this.y+height;
+	11.	    }
+2.当英雄机击中蜜蜂时，可以获取奖励，增命或是获得双倍火力，因此在Hero类中添加addDoubleFire实现获取双倍火力；添加addLife方法增命，代码如下所示：
+	1.	    public void addDoubleFire(){
+	2.	        doubleFire += 40;
+	3.	    }
+	4.	
+	5.	    public void addLife() { // 增命
+	6.	        life++;
+	7.	    }
+3.在Airplane类中，实现getScore方法，每击中一架敌飞机获得5分，getScore方法的代码如下所示：
+	1.	    public int getScore() {
+	2.	        return 5;
+	3.	    }
+4. 在Bee类中，实现getType方法，获取奖励的类型，getType的代码如下所示：
+	1.	    public int getType() {
+	2.	        return awardType;
+	3.	    }
+5. 在ShootGame类中添加属性score，用于记录得分，代码如下所示：
+	1.	    private int score = 0; // 得分
+6. 在ShootGame类中，添加bangAction方法和bang方法，这两个方法实现了子弹与飞行物（蜜蜂或敌飞机）的碰撞检测，详细过程如下：
+1） 循环遍历存储所有的子弹数组bullets；
+2） 在上述循环中，再次使用循环，遍历存储所有飞行物（蜜蜂或敌飞机）的数组flyings，在该循环中判断当前子弹是否击中某个飞行物(蜜蜂或敌飞机)，如果击中则退出该循环，记录被击中的飞行物在flyings数组中的索引index；
+3）在flyings数据中找到该飞行物，并将其移除;
+4）判断该飞行物的类型是Enemy还是Award，如果是Enemy类型，则获取加分；如果是Award类型，则获取奖励；
+5）获取奖励的类型，如果奖励的类型为DOUBLE_FIRE，则获得20次双倍火力；如果奖励的类型为LIFE，则增命，代码如下所示：
+	1.	    /** 子弹与飞行物碰撞检测 */
+	2.	    public void bangAction() {
+	3.	        for (int i = 0; i < bullets.length; i++) { // 遍历所有子弹
+	4.	            Bullet b = bullets[i];
+	5.	            bang(b);
+	6.	        }
+	7.	    }
+	8.	    /** 子弹和飞行物之间的碰撞检查 */
+	9.	    public void bang(Bullet bullet) {
+	10.	        int index = -1; // 击中的飞行物索引
+	11.	        for (int i = 0; i < flyings.length; i++) {
+	12.	            FlyingObject obj = flyings[i];
+	13.	            if (obj.shootBy(bullet)) { // 判断是否击中
+	14.	                index = i; // 记录被击中的飞行物的索引
+	15.	                break;
+	16.	            }
+	17.	        }
+	18.	        if (index != -1) { // 有击中的飞行物
+	19.	            FlyingObject one = flyings[index]; // 记录被击中的飞行物
+	20.	
+	21.	            FlyingObject temp = flyings[index]; // 被击中的飞行物与最后一个飞行物交换
+	22.	            flyings[index] = flyings[flyings.length - 1];
+	23.	            flyings[flyings.length - 1] = temp;
+	24.	          // 删除最后一个飞行物(即被击中的)
+	25.	            flyings = Arrays.copyOf(flyings, flyings.length - 1); 
+	26.	
+	27.	            // 检查one的类型 如果是敌人, 就算分
+	28.	            if (one instanceof Enemy) { // 检查类型，是敌人，则加分
+	29.	                Enemy e = (Enemy) one; // 强制类型转换
+	30.	                score += e.getScore(); // 加分
+	31.	            } 
+	32.	if (one instanceof Award) { // 若为奖励，设置奖励
+	33.	                Award a = (Award) one;
+	34.	                int type = a.getType(); // 获取奖励类型
+	35.	                switch (type) {
+	36.	                case Award.DOUBLE_FIRE:
+	37.	                    hero.addDoubleFire(); // 设置双倍火力
+	38.	                    break;
+	39.	                case Award.LIFE:
+	40.	                    hero.addLife(); // 设置加命
+	41.	                    break;
+	42.	                }
+	43.	            }
+	44.	        }
+	45.	    }
+7. 在Action方法中调用bangAction方法，代码如下所示：
+	1.	    public void action() { // 启动执行代码
+	2.	        timer = new Timer(); // 主流程控制
+	3.	        timer.schedule(new TimerTask() {
+	4.	            @Override
+	5.	            public void run() {
+	6.	                    enterAction(); // 飞行物入场
+	7.	                    stepAction(); // 走一步
+	8.	                    shootAction(); // 射击
+	9.	                    repaint(); // 重绘，调用paint()方法
+	10.	            }
+	11.	        }, intervel, intervel);
+	12.	    }
+步骤二十一：实现画分数和命数
+1.在Hero类中，添加getLife方法，该方法用于获取英雄机的命数，代码如下所示：
+	1.	    public int getLife() {
+	2.	        return life;
+	3.	    }
+2.在ShootGame类中，添加paintScore方法，该方法用于画分数和命数，代码如下所示：
+	1.	    /** 画分数 */
+	2.	    public void paintScore(Graphics g) {
+	3.	        int x = 10;
+	4.	        int y = 25;
+	5.	        Font font = new Font(Font.SANS_SERIF,Font.BOLD, 14);
+	6.	        g.setColor(new Color(0x3A3B3B));
+	7.	        g.setFont(font); // 设置字体
+	8.	        g.drawString("SCORE:" + score, x, y); // 画分数
+	9.	        y+=20;
+	10.	        g.drawString("LIFE:" + hero.getLife(), x, y);
+	11.	    }
+3.在ShootGame类的paint方法中，调用paintScore方法，代码如下所示：
+	1.	    @Override
+	2.	    public void paint(Graphics g) {
+	3.	        g.drawImage(background, 0, 0, null); // 画背景图
+	4.	        paintHero(g); // 画英雄机
+	5.	        paintBullets(g); // 画子弹
+	6.	        paintFlyingObjects(g); // 画飞行物
+	7.	    }
+步骤二十二：删除越界飞行物（蜜蜂和敌飞机）和子弹
+1.由于蜜蜂、敌飞机、子弹都可能出现越界现象，因此，在FlyingObject类中添加抽象方法outOfBounds，根据子类不同实现具体的越界算法，代码如下所示：
+	1.	    /**
+	2.	     * 检查是否出界
+	3.	     * @param width  边界宽
+	4.	     * @param height 边界高
+	5.	     * @return true 出界与否
+	6.	     */
+	7.	    public abstract boolean outOfBounds();
+2.在Bee类中，实现父类FlyingObject的越界判断方法，蜜蜂是向下飞行的，下越界的临界状态如图-17所示：
+￼
+图 – 17
+由图-17可以看出，当蜜蜂的y坐标大于屏幕的高度时，蜜蜂超出了边界 ，代码如下所示：
+	1.	    @Override
+	2.	    public boolean outOfBounds() {
+	3.	        return y>ShootGame.HEIGHT;
+	4.	    }
+3. 在Airplane类中，实现父类FlyingObject的越界判断方法，敌飞机上下越界的临界状态与蜜蜂相同，代码如下所示：
+	1.	    @Override
+	2.	    public     boolean outOfBounds() {   //越界处理
+	3.	        return y>ShootGame.HEIGHT;
+	4.	    }
+4. 在Bullet类中，实现父类FlyingObject的越界判断方法，子弹是向上运动的，子弹上越界的临界状态如图-18所示。
+￼
+图 – 18
+由图-18可以看出，当子弹的y坐标小于子弹的负高度时，子弹超出了边界 ，代码如下所示：
+	1.	    @Override
+	2.	    public boolean outOfBounds() {
+	3.	        return y<-height;
+	4.	    }
+5.在ShootGame类中添加outOfBoundsAction方法，该方法用于删除越界飞行物（蜜蜂和敌飞机）及子弹，详细实现过程如下：
+1）创建FlyingObject类型的数组flyingLives，用于存储所有活着的飞行物（蜜蜂和敌飞机），即没有越界的飞行物（蜜蜂和敌飞机）；
+2）循环遍历存储所有飞行物（蜜蜂和敌飞机）的数组flyings，并判断每一个飞行物（蜜蜂或敌飞机）是否越界，将没有越界的飞行物（蜜蜂或敌飞机）放入flyingLives数组中存储，并记录不越界飞行物的个数index；
+3）将flyingLives数组中的元素，复制到flyings数组中，并重新指定flying数组的长度为index；
+4）删除子弹与删除飞行物（蜜蜂和敌飞机）的过程类似。
+outOfBoundsAction方法的代码如下所示：
+	1.	    /** 删除越界飞行物及子弹 */
+	2.	    public void outOfBoundsAction() {
+	3.	        int index = 0;
+	4.	      // 存储活着的飞行物
+	5.	        FlyingObject[] flyingLives = new FlyingObject[flyings.length]; 
+	6.	        for (int i = 0; i < flyings.length; i++) {
+	7.	            FlyingObject f = flyings[i];
+	8.	            if (!f.outOfBounds()) {
+	9.	                flyingLives[index++] = f; // 不越界的留着
+	10.	            }
+	11.	        }
+	12.	        flyings = Arrays.copyOf(flyingLives, index); // 将不越界的飞行物都留着
+	13.	
+	14.	        index = 0; // 重置为0
+	15.	        Bullet[] bulletLives = new Bullet[bullets.length];
+	16.	        for (int i = 0; i < bullets.length; i++) {
+	17.	            Bullet b = bullets[i];
+	18.	            if (!b.outOfBounds()) {
+	19.	                bulletLives[index++] = b;
+	20.	            }
+	21.	        }
+	22.	        bullets = Arrays.copyOf(bulletLives, index); // 将不越界的子弹留着
+	23.	    }
+6.在ShootAction类的action方法中调用outOfBoundsAction，代码如下所示：
+	1.	    public void action() { // 启动执行代码
+	2.	        // 鼠标监听事件
+	3.	        MouseAdapter l = new MouseAdapter() {
+	4.	            @Override
+	5.	            public void mouseMoved(MouseEvent e) { // 鼠标移动
+	6.	                    int x = e.getX();
+	7.	                    int y = e.getY();
+	8.	                    hero.moveTo(x, y);
+	9.	            }
+	10.	        };
+	11.	        this.addMouseMotionListener(l); // 处理鼠标滑动操作
+	12.	        
+	13.	        timer = new Timer(); // 主流程控制
+	14.	        timer.schedule(new TimerTask() {
+	15.	            @Override
+	16.	            public void run() {
+	17.	                    enterAction(); // 飞行物入场
+	18.	                    stepAction(); // 走一步
+	19.	                    shootAction(); // 射击
+	20.	                    bangAction(); 
+	21.	                    repaint(); // 重绘，调用paint()方法
+	22.	            }
+	23.	        }, intervel, intervel);
+	24.	    }
+	
+	
+	
+步骤二十三：判断英雄机是否与飞行物（蜜蜂和敌飞机）碰撞
+1.当英雄机与飞行物（蜜蜂和敌飞机）发生碰撞时，需要减少命的数量以及将双倍火力清零，因此，在Hero类中添加subtractLife方法，用于实现减命；添加setDoubleFire用于重新设置双倍火力的值，代码如下所示：
+	1.	    public void subtractLife() { // 减命
+	2.	        life--;
+	3.	    }
+	4.	public void setDoubleFire(int doubleFire) {
+	5.	        this.doubleFire = doubleFire;
+	6.	    }
+2. 在Hero类中添加hit方法用于英雄机与飞行物（蜜蜂和敌飞机）的碰撞检测，图-19以蜜蜂为例说明了碰撞算法。
+￼
+图 – 19
+由图-19可以看出，x1、x2以及y1、y2的坐标算法如下：
+	1.	x1=bee.x-1/2hero.width
+	2.	x2=bee.x+1/2hero.width+bee.width
+	3.	
+	4.	y1=bee.y-1/2hero.height
+	5.	y2=bee.y+1/2hero.height+bee.height
+英雄机中心点的x、y坐标算法如下：
+	1.	hero.中心点x=hero.x+1/2hero.width
+	2.	hero.中心点y=hero.y+1/2hero.height
+当满足如下条件时，英雄机与蜜蜂发生碰撞：
+	1.	x1<Hero.中心点x<x2
+	2.	y1<Hero.中心点y<y2
+hit方法的实现代码如下所示：
+	1.	    public boolean hit(FlyingObject other) { // 碰撞算法
+	2.	        int x1 = other.x - this.width / 2;
+	3.	        int x2 = other.x + other.width + this.width / 2;
+	4.	        int y1 = other.y - this.height / 2;
+	5.	        int y2 = other.y + other.height + this.height / 2;
+	6.	        return this.x + this.width / 2 > x1 && this.x + this.width / 2 < x2
+	7.	                && this.y + this.height / 2 > y1
+	8.	                && this.y + this.width / 2 < y2;
+	9.	    }
+3. 在ShootGame类中，添加isGameOver方法，该方法用于判断游戏是否结束，方法实现的详细过程如下：
+1） 循环遍历存储所有飞行物（蜜蜂和敌飞机）的数组flyings；
+2） 在循环中，判断英雄机是否与某个飞行物（蜜蜂和敌飞机）发生碰撞，如果发生碰撞，则减命、双倍火力清零，并记录被撞飞行物在flyings数组中的索引index，该索引默认为-1，即没有发生碰撞；
+3） 判断index是否为-1，如果不为-1，将该索引位置的元素从flyings数组中清除；
+4）判断命数是否小于等于0，并返回比较结果。
+	1.	    /** 检查游戏是否结束 */
+	2.	    public boolean isGameOver() {
+	3.	        for (int i = 0; i < flyings.length; i++) {
+	4.	int index = -1;
+	5.	            FlyingObject obj = flyings[i];
+	6.	            if (hero.hit(obj)) { // 检查英雄机与飞行物是否碰撞
+	7.	                hero.subtractLife();
+	8.	                hero.setDoubleFire(0);
+	9.	                index = i;
+	10.	            }
+	11.	         if(index!=-1){
+	12.	            FlyingObject t = flyings[index];
+	13.	            flyings[index] = flyings[flyings.length-1];
+	14.	            flyings[flyings.length-1] = t;
+	15.	            flyings = Arrays.copyOf(flyings, flyings.length-1);
+	16.	           }
+	17.	        }
+	18.	        
+	19.	        return  hero.getLife() <= 0;
+	20.	    }
+	
+	
+	
+步骤二十四：实现游戏的开始、运行、暂停以及结束
+游戏分为四种状态，分别为START、RUNNING、PAUSE、GAME_OVER，
+表示游戏开始状态、运行状态、暂停状态以及游戏结束状态。
+
+首先介绍一下鼠标事件对状态的影响，当执行鼠标点击事件时，
+会对游戏中的START状态、GAME_OVER状态产生影响。
+如果点击鼠标时为START状态，则将游戏的状态设置为RUNNING，
+即点击鼠标游戏进入运行状态；如果点击鼠标时为GAME_OVER状态，
+则将flyings数组、bullets数组、hero对象、score变量设置为初始状态，
+并将状态设置为START状态。代码如下：
+	1.	flyings = new FlyingObject[0];
+	2.	    bullets = new Bullet[0];
+	3.	    hero = new Hero();
+	4.	    score = 0;
+	5.	    state = START;
+
+当鼠标执行移动事件时，判断状态是否RUNNING状态，
+如果为RUNNING，则执行英雄机跟随鼠标移动的方法。
+当鼠标执行进入事件时，判断状态是否PAUSE，
+如果为PAUSE状态，则状态更改为RUNNING。
+当鼠标执行退出事件时，判断状态是否GAME_OVER状态，
+如果不为GAME_OVER状态，则状态更改为PAUSE。
+
+然后，当游戏状态为RUNNING状态时，
+执行飞行物入场、所有飞行物走一步、射击、子弹打飞行物、
+删除越界飞行物及子弹、检查游戏结束这一系列动作，代码如下：
+	1.	if (state == RUNNING) {
+	2.	        enterAction(); // 飞行物入场
+	3.	        stepAction(); // 走一步
+	4.	        shootAction(); // 射击
+	5.	        bangAction(); // 子弹打飞行物
+	6.	        outOfBoundsAction(); // 删除越界飞行物及子弹
+	7.	        checkGameOverAction(); // 检查游戏结束
+	8.	    }
+最后，如果判断游戏已经结束，那么将游戏状态设置为GAME_OVER，代码如下：
+	1.	    /** 检查游戏结束 */
+	2.	    public void checkGameOverAction() {
+	3.	        if (isGameOver()) {
+	4.	            state = GAME_OVER; // 改变状态
+	5.	        }
+	6.	    }
+
+
+具体实现步骤如下：
+1.在ShootGame类中添加以下属性和常量，代码如下所示：
+	1.	    private int state;
+	2.	    public static final int START = 0;
+	3.	    public static final int RUNNING = 1;
+	4.	    public static final int PAUSE = 2;
+	5.	    public static final int GAME_OVER = 3;
+
+2. 在ShootGame类中添加checkGameOverAction方法，
+该方法用于判断游戏是否已经结束，如果已经结束，则将游戏状态设置为GAME_OVER，代码如下所示：
+	1.	/** 检查游戏结束 */
+	2.	    public void checkGameOverAction() {
+	3.	        if (isGameOver()) {
+	4.	            state = GAME_OVER; // 改变状态
+	5.	        }
+	6.	    }
+
+3.修改ShootGame类的action方法，添加鼠标点击、移入、退出等操作的状态处理，代码如下所示：
+	1.	    public void action() { // 启动执行代码
+	2.	        // 鼠标监听事件
+	3.	        MouseAdapter l = new MouseAdapter() {
+	4.	            @Override
+	5.	            public void mouseMoved(MouseEvent e) { // 鼠标移动
+	6.	                    int x = e.getX();
+	7.	                    int y = e.getY();
+	8.	                    hero.moveTo(x, y);
+	9.	            }
+	10.	
+	11.	        };
+	12.	        this.addMouseMotionListener(l); // 处理鼠标滑动操作
+	13.	
+	14.	        timer = new Timer(); // 主流程控制
+	15.	        timer.schedule(new TimerTask() {
+	16.	            @Override
+	17.	            public void run() {
+	18.	                if (state == RUNNING) {
+	19.	                    enterAction(); // 飞行物入场
+	20.	                    stepAction(); // 走一步
+	21.	                    shootAction(); // 射击
+	22.	                    bangAction(); // 子弹打飞行物
+	23.	                    outOfBoundsAction(); // 删除越界飞行物及子弹
+	24.	                }
+	25.	                repaint(); // 重绘，调用paint()方法
+	26.	            }
+	27.	
+	28.	        }, intervel, intervel);
+	29.	    }
+
+4. 在ShootGame类中添加paintState方法，画出START、PAUSE以及GAME_OVER状态显示的图片，代码如下所示：
+	1.	    /** 画游戏状态 */
+	2.	    public void paintState(Graphics g) {
+	3.	        switch (state) {
+	4.	        case START:
+	5.	            g.drawImage(start, 0, 0, null);
+	6.	            break;
+	7.	        case PAUSE:
+	8.	            g.drawImage(pause, 0, 0, null);
+	9.	            break;
+	10.	        case GAME_OVER:
+	11.	            g.drawImage(gameover, 0, 0, null);
+	12.	            break;
+	13.	        }
+	14.	    }
+
+5. 在ShootGame类中paint方法中，调用paintState方法，代码如下所示：
+	1.	    @Override
+	2.	    public void paint(Graphics g) {
+	3.	        g.drawImage(background, 0, 0, null); // 画背景图
+	4.	        paintHero(g); // 画英雄机
+	5.	        paintBullets(g); // 画子弹
+	6.	        paintFlyingObjects(g); // 画飞行物
+	7.	        paintScore(g); // 画分数
+	8.	    }
+1.4 完整代码
+Airplane类的完整代码如下所示：
+代码
+Award类的完整代码如下所示：
+代码
+Bee类的完整代码如下所示：
+代码
+Bullet类的完整代码如下所示：
+代码
+Enemy类的完整代码如下所示：
+代码
+FlyingObject类的完整代码如下所示：
+代码
+Hero类的完整代码如下所示：
+代码
+ShootGame类的完整代码如下所示：
+代码
+Copyright(C) 达内时代科技集团有限公司 2011-2014 tarena.com.cn 返回顶部

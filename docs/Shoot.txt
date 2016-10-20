@@ -1,0 +1,191 @@
+回顾:
+1.多态:多种形态----重载、重写
+    1)同一引用指向不同对象，操作不同
+    2)同一对象被造型为不同类型，行为不同
+  向上造型、
+  强制转换:
+    1.引用指向的对象就是该类型
+    2.引用指向的对象实现了该接口
+    不符合 ClassCastException类型转换异常
+    通过if(引用 instanceof 类型){}判断后再转型
+2.内部类:
+    类中套类，里面Inner，外面Outer
+    匿名内部类
+       Inter1 i = new Inter1(){
+       };
+3.小结
+    封装
+    继承
+    多态
+
+
+
+正课:
+1. 项目开发的过程
+需求分析阶段:
+需求分析师------与用户沟通，了解需求
+  业务、技术
+需求说明书.doc----用户确认
+
+设计阶段:
+  概要设计-----数据库设计、模块 
+  详细设计-----类、成员、方法
+    方法的算法-----UML图
+
+编码阶段:
+  将详细设计中的内容转换为代码
+
+
+中软
+
+
+邮件------2年时间
+5月封闭开发--------3个月
+
+大型
+
+产品------一个东西可以给多个公司用
+  扩展性、维护性、兼容性、复用性、移植性....
+
+项目------一个东西只能给一个公司用
+
+
+对用户来说无所谓的方便
+------代码费很大的事
+
+
+A
+B-----费很大的事
+
+
+
+
+2. 关于飞机大战游戏
+
+Swing:
+
+1.JFrame:框架---相框
+2.JPanel:面板---相板
+
+B/S----浏览器服务器模式--------
+
+C/S----客户端服务器模式
+
+.net---Winform
+
+
+
+
+3. 课程安排
+一共是24步
+今天讲完第16步
+后面两天讲8步
+
+com.tarena.shoot
+
+
+
+
+
+4. 
+走步的步数-----
+
+英雄机
+敌机----------speed(y+)
+子弹----------speed(y-)
+蜜蜂----------xSpeed(x+ or x-)
+              ySpeed(y+)
+
+
+
+doubleFire----初始为0
+              得一次加40
+	      发一次子弹减2
+
+0
++40
+-4-------36
++40---76
++40---116
+
+
+Random rand = new Random()
+int num = rand.nextInt(100); 0到19的
+
+int num = (int)(Math.random()*100);
+
+
+FlyingObject飞行物类
+Enemy敌人
+Award奖励
+
+
+Hero英雄机
+  width、height、x、y、image
+Airplane敌机
+  width、height、x、y、image
+Bee小蜜蜂
+  width、height、x、y、image
+Bullet子弹
+  width、height、x、y、image
+
+ShootGame测试类
+
+
+
+Start------开始
+Running----运行
+Pause------暂停
+Game_Over--游戏结束
+
+
+小结:
+1.FlyingObject
+    width,height,x,y,image
+2.Enemy
+    getScore()
+3.Award
+    DOUBLE_FIRE,LIFE,getType()
+4.Hero: FlyingObject
+    life,doubleFire,images,index
+    Hero()
+5.Bullet:FlyingObject
+    speed
+    Bullet(x,y)
+6.Airplane:FlyingObject,Enemy
+    speed，重写getScore()
+    Airplane()
+7.Bee:FlyingObject,Award
+    xSpeed,ySpeed,awardType,重写getType()
+    Bee()
+8.ShootGame:JPanel
+    WIDTH,HEIGHT
+    background,start,pause,gameover....
+    static{初始化静态图片}
+    hero,flyings,bullets
+    main(){
+       .setVisible(true); //调paint()方法
+    }
+    paint(g){
+       画背景
+       画英雄机---paintHero(g)
+       画子弹-----paintBullets(g)
+       画敌人-----paintFlyingObjects(g)
+    }
+    paintHero(g)
+    paintBullets(g)
+    paintFlyingObjects(g)
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,107 @@
+步骤二十二：删除越界飞行物（蜜蜂和敌飞机）和子弹
+1.由于蜜蜂、敌飞机、子弹都可能出现越界现象，
+因此，在FlyingObject类中添加抽象方法outOfBounds，
+根据子类不同实现具体的越界算法，代码如下所示：
+	1.	    /**
+	2.	     * 检查是否出界
+	3.	     * @param width  边界宽
+	4.	     * @param height 边界高
+	5.	     * @return true 出界与否
+	6.	     */
+	7.	    public abstract boolean outOfBounds();
+	
+	
+2.在Bee类中，实现父类FlyingObject的越界判断方法，
+蜜蜂是向下飞行的，下越界的临界状态如图-17所示：
+￼
+图 – 17
+由图-17可以看出，当蜜蜂的y坐标大于屏幕的高度时，蜜蜂超出了边界 ，代码如下所示：
+	1.	    @Override
+	2.	    public boolean outOfBounds() {
+	3.	        return y>ShootGame.HEIGHT;
+	4.	    }
+	
+	
+3. 在Airplane类中，实现父类FlyingObject的越界判断方法，
+敌飞机上下越界的临界状态与蜜蜂相同，代码如下所示：
+	1.	    @Override
+	2.	    public     boolean outOfBounds() {   //越界处理
+	3.	        return y>ShootGame.HEIGHT;
+	4.	    }
+
+
+4. 在Bullet类中，实现父类FlyingObject的越界判断方法，
+子弹是向上运动的，子弹上越界的临界状态如图-18所示。
+￼
+图 – 18
+由图-18可以看出，当子弹的y坐标小于子弹的负高度时，子弹超出了边界 ，代码如下所示：
+	1.	    @Override
+	2.	    public boolean outOfBounds() {
+	3.	        return y<-height;
+	4.	    }
+	
+	
+5.在ShootGame类中添加outOfBoundsAction方法，
+该方法用于删除越界飞行物（蜜蜂和敌飞机）及子弹，详细实现过程如下：
+1）创建FlyingObject类型的数组flyingLives，
+用于存储所有活着的飞行物（蜜蜂和敌飞机），
+即没有越界的飞行物（蜜蜂和敌飞机）；
+2）循环遍历存储所有飞行物（蜜蜂和敌飞机）的数组flyings，
+并判断每一个飞行物（蜜蜂或敌飞机）是否越界，
+将没有越界的飞行物（蜜蜂或敌飞机）放入flyingLives数组中存储，
+并记录不越界飞行物的个数index；
+3）将flyingLives数组中的元素，复制到flyings数组中，
+并重新指定flying数组的长度为index；
+4）删除子弹与删除飞行物（蜜蜂和敌飞机）的过程类似。
+outOfBoundsAction方法的代码如下所示：
+	1.	    /** 删除越界飞行物及子弹 */
+	2.	    public void outOfBoundsAction() {
+	3.	        int index = 0;
+	4.	      // 存储活着的飞行物
+	5.	        FlyingObject[] flyingLives = new FlyingObject[flyings.length]; 
+	6.	        for (int i = 0; i < flyings.length; i++) {
+	7.	            FlyingObject f = flyings[i];
+	8.	            if (!f.outOfBounds()) {
+	9.	                flyingLives[index++] = f; // 不越界的留着
+	10.	            }
+	11.	        }
+	12.	        flyings = Arrays.copyOf(flyingLives, index); // 将不越界的飞行物都留着
+	13.	
+	14.	        index = 0; // 重置为0
+	15.	        Bullet[] bulletLives = new Bullet[bullets.length];
+	16.	        for (int i = 0; i < bullets.length; i++) {
+	17.	            Bullet b = bullets[i];
+	18.	            if (!b.outOfBounds()) {
+	19.	                bulletLives[index++] = b;
+	20.	            }
+	21.	        }
+	22.	        bullets = Arrays.copyOf(bulletLives, index); // 将不越界的子弹留着
+	23.	    }
+	
+	
+6.在ShootAction类的action方法中调用outOfBoundsAction，代码如下所示：
+	1.	    public void action() { // 启动执行代码
+	2.	        // 鼠标监听事件
+	3.	        MouseAdapter l = new MouseAdapter() {
+	4.	            @Override
+	5.	            public void mouseMoved(MouseEvent e) { // 鼠标移动
+	6.	                    int x = e.getX();
+	7.	                    int y = e.getY();
+	8.	                    hero.moveTo(x, y);
+	9.	            }
+	10.	        };
+	11.	        this.addMouseMotionListener(l); // 处理鼠标滑动操作
+	12.	        
+	13.	        timer = new Timer(); // 主流程控制
+	14.	        timer.schedule(new TimerTask() {
+	15.	            @Override
+	16.	            public void run() {
+	17.	                    enterAction(); // 飞行物入场
+	18.	                    stepAction(); // 走一步
+	19.	                    shootAction(); // 射击
+	20.	                    bangAction(); 
+	21.	                    repaint(); // 重绘，调用paint()方法
+	22.	            }
+	23.	        }, intervel, intervel);
+	24.	    }
+

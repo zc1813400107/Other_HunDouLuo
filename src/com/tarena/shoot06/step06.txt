@@ -1,0 +1,103 @@
+步骤二十：实现子弹打敌飞机和蜜蜂
+1. 由于蜜蜂和敌飞机都可以被子弹击中，因此在FlyingObject类中添加shootBy方法，该方法的参数为子弹类型。图-16以蜜蜂为例，说明了被子弹击中的算法。
+
+图 – 16
+由图-16可以看出，当子弹的x坐标在蜜蜂的x与x+width之间，并且子弹的y坐标在蜜蜂的y与y+height之间时，子弹击中了蜜蜂，即：
+bee.x<bullet.x<bee.x+width
+&&
+bee.y<bullet.y<bee.y+height
+在代码中把蜜蜂换成this就可以了，shootBy方法代码如下所示：
+	/**
+	* 检查当前飞行物体是否被子弹(x,y)击(shoot)中，
+	* true表示击中，飞行物可以被击中
+	* @param Bullet 子弹对象
+	* @return true表示被击中了
+	*/
+	public boolean shootBy(Bullet bullet){
+		int x = bullet.x;  //子弹横坐标
+		int y = bullet.y;  //子弹纵坐标
+		return this.x<x && x<this.x+width && this.y<y && y<this.y+height;
+	}
+2.当英雄机击中蜜蜂时，可以获取奖励，增命或是获得双倍火力，因此在Hero类中添加addDoubleFire实现获取双倍火力；添加addLife方法增命，代码如下所示：
+	public void addDoubleFire(){
+		doubleFire += 40;
+	}
+
+	public void addLife() { // 增命
+		life++;
+	}
+3.在Airplane类中，实现getScore方法，每击中一架敌飞机获得5分，getScore方法的代码如下所示：
+	public int getScore() {
+		return 5;
+	}
+4. 在Bee类中，实现getType方法，获取奖励的类型，getType的代码如下所示：
+	public int getType() {
+		return awardType;
+	}
+5. 在ShootGame类中添加属性score，用于记录得分，代码如下所示：
+	private int score = 0; // 得分
+6. 在ShootGame类中，添加bangAction方法和bang方法，这两个方法实现了子弹与飞行物（蜜蜂或敌飞机）的碰撞检测，详细过程如下：
+1） 循环遍历存储所有的子弹数组bullets；
+2） 在上述循环中，再次使用循环，遍历存储所有飞行物（蜜蜂或敌飞机）的数组flyings，在该循环中判断当前子弹是否击中某个飞行物(蜜蜂或敌飞机)，如果击中则退出该循环，记录被击中的飞行物在flyings数组中的索引index；
+3）在flyings数据中找到该飞行物，并将其移除;
+4）判断该飞行物的类型是Enemy还是Award，如果是Enemy类型，则获取加分；如果是Award类型，则获取奖励；
+5）获取奖励的类型，如果奖励的类型为DOUBLE_FIRE，则获得20次双倍火力；如果奖励的类型为LIFE，则增命，代码如下所示：
+	/** 子弹与飞行物碰撞检测 */
+	public void bangAction() {
+		for (int i = 0; i < bullets.length; i++) { // 遍历所有子弹
+			Bullet b = bullets[i];
+			bang(b);
+		}
+	}
+	/** 子弹和飞行物之间的碰撞检查 */
+	public void bang(Bullet bullet) {
+		int index = -1; // 击中的飞行物索引
+		for (int i = 0; i < flyings.length; i++) {
+			FlyingObject obj = flyings[i];
+			if (obj.shootBy(bullet)) { // 判断是否击中
+				index = i; // 记录被击中的飞行物的索引
+				break;
+			}
+		}
+		if (index != -1) { // 有击中的飞行物
+			FlyingObject one = flyings[index]; // 记录被击中的飞行物
+
+			FlyingObject temp = flyings[index]; // 被击中的飞行物与最后一个飞行物交换
+			flyings[index] = flyings[flyings.length - 1];
+			flyings[flyings.length - 1] = temp;
+          // 删除最后一个飞行物(即被击中的)
+			flyings = Arrays.copyOf(flyings, flyings.length - 1); 
+
+			// 检查one的类型 如果是敌人, 就算分
+			if (one instanceof Enemy) { // 检查类型，是敌人，则加分
+				Enemy e = (Enemy) one; // 强制类型转换
+				score += e.getScore(); // 加分
+			} 
+if (one instanceof Award) { // 若为奖励，设置奖励
+				Award a = (Award) one;
+				int type = a.getType(); // 获取奖励类型
+				switch (type) {
+				case Award.DOUBLE_FIRE:
+					hero.addDoubleFire(); // 设置双倍火力
+					break;
+				case Award.LIFE:
+					hero.addLife(); // 设置加命
+					break;
+				}
+			}
+		}
+	}
+7. 在Action方法中调用bangAction方法，代码如下所示：
+	public void action() { // 启动执行代码
+		timer = new Timer(); // 主流程控制
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+					enterAction(); // 飞行物入场
+					stepAction(); // 走一步
+					shootAction(); // 射击
+				    repaint(); // 重绘，调用paint()方法
+			}
+		}, intervel, intervel);
+	}
+步骤二十一：实现画分数和命数
